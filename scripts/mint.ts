@@ -8,14 +8,18 @@ import MyNFT from "../artifacts/contracts/NFT.sol/MyNFT.json";
 const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 async function main() {
+  const MyNFTContract = await ethers.getContractFactory("MyNFT");
+  const myNFTContract = await MyNFTContract.deploy();
+  await myNFTContract.deployed();
+
+  console.log("NFT deployed to:", myNFTContract.address);
+
   const [owner] = await ethers.getSigners();
 
-  console.log(owner)
-  const contract = new ethers.Contract(contractAddress, MyNFT.abi, owner);
+  // console.log(owner)
+  const contract = new ethers.Contract(myNFTContract.address, MyNFT.abi, owner);
   // console.log({ provider, signer, contract });
-
-  await contract.mintNFT(owner, 'http://example.com')
-
+  await contract.mintNFT(owner.address, "http://example.com");
 }
 
 // We recommend this pattern to be able to use async/await everywhere
